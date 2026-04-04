@@ -1,7 +1,11 @@
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-neutral-900 flex items-center justify-center">
-      <h1 className="text-4xl text-white font-bold">Welcome</h1>
-    </main>
-  );
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/server-session";
+
+export default async function Home() {
+  const user = await getSession();
+  if (user) {
+    redirect("/dashboard");
+  } else {
+    redirect("/login");
+  }
 }
