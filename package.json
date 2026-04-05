@@ -12,6 +12,9 @@
     "db:migrate": "bun run src/db/migrate.ts"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.0",
     "@kilocode/app-builder-db": "github:Kilo-Org/app-builder-db#main",
     "drizzle-orm": "^0.45.2",
     "next": "^16.1.3",
