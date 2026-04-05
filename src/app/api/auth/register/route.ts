@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { setSession } from "@/lib/server-session";
-import { hash } from "@node-rs/argon2";
+import { hash } from "@/lib/hash";
 import { eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const hashedPassword = await hash(password);
+    const hashedPassword = hash(password);
 
     const [newUser] = await db
       .insert(users)

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { setSession } from "@/lib/server-session";
-import { verify } from "@node-rs/argon2";
+import { verify } from "@/lib/hash";
 import { eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const validPassword = await verify(user[0].password, password);
+    const validPassword = verify(password, user[0].password);
 
     if (!validPassword) {
       return NextResponse.json(
