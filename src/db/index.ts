@@ -1,28 +1,10 @@
-export const db: any = {
-  select: () => ({
-    from: () => ({
-      where: () => ({
-        orderBy: () => ({ limit: () => Promise.resolve([]), groupBy: () => Promise.resolve([]), then: () => Promise.resolve([]) }),
-        limit: () => ({ then: () => Promise.resolve([]) }),
-        all: () => Promise.resolve([]),
-        then: () => Promise.resolve([]),
-      }),
-      all: () => ({ then: () => Promise.resolve([]) }),
-      orderBy: () => ({ then: () => Promise.resolve([]) }),
-      leftJoin: () => ({ where: () => ({ then: () => Promise.resolve([]), limit: () => ({ then: () => Promise.resolve([]) }) }) }),
-    }),
-  }),
-  insert: () => ({
-    into: () => ({
-      values: () => ({ returning: () => Promise.resolve([]) }),
-    }),
-  }),
-  update: () => ({
-    set: () => ({
-      where: () => ({ returning: () => Promise.resolve([]) }),
-    }),
-  }),
-  delete: () => ({
-    where: () => ({ returning: () => Promise.resolve([]) }),
-  }),
-};
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema";
+
+const connectionString = process.env.DATABASE_URL || "";
+
+const client = postgres(connectionString, { max: 1 });
+export const db = drizzle(client, { schema });
+
+export default db;

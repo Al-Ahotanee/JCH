@@ -1,7 +1,7 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { pgTable, text, integer, real, timestamp, serial, boolean } from "drizzle-orm/pg-core";
 
-export const users = sqliteTable("users", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   role: text("role").notNull().default("user"),
@@ -20,23 +20,23 @@ export const users = sqliteTable("users", {
   passportPhoto: text("passport_photo"),
   profileComplete: integer("profile_complete").default(0),
   isApproved: integer("is_approved").default(0),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const education = sqliteTable("education", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const education = pgTable("education", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   institutionName: text("institution_name"),
   qualificationType: text("qualification_type"),
   fieldOfStudy: text("field_of_study"),
   yearOfGraduation: integer("year_of_graduation"),
   grade: text("grade"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const employment = sqliteTable("employment", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const employment = pgTable("employment", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   employmentStatus: text("employment_status"),
   currentEmployer: text("current_employer"),
@@ -45,104 +45,104 @@ export const employment = sqliteTable("employment", {
   workDuration: text("work_duration"),
   roles: text("roles"),
   references: text("references"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const skills = sqliteTable("skills", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const skills = pgTable("skills", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   skillName: text("skill_name"),
   category: text("category"),
   proficiencyLevel: text("proficiency_level"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const certifications = sqliteTable("certifications", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const certifications = pgTable("certifications", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   certificationName: text("certification_name"),
   issuingOrganization: text("issuing_organization"),
   dateObtained: text("date_obtained"),
   expiryDate: text("expiry_date"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const cvUploads = sqliteTable("cv_uploads", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const cvUploads = pgTable("cv_uploads", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   fileName: text("file_name"),
   filePath: text("file_path"),
   fileType: text("file_type"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const mentors = sqliteTable("mentors", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const mentors = pgTable("mentors", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   category: text("category"),
   bio: text("bio"),
   expertise: text("expertise"),
   isApproved: integer("is_approved").default(0),
   rating: real("rating"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const mentorshipRelationships = sqliteTable("mentorship_relationships", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const mentorshipRelationships = pgTable("mentorship_relationships", {
+  id: serial("id").primaryKey(),
   menteeId: integer("mentee_id").references(() => users.id),
   mentorId: integer("mentor_id").references(() => users.id),
   status: text("status").default("active"),
-  startDate: integer("start_date", { mode: "timestamp" }).$defaultFn(() => new Date()),
-  endDate: integer("end_date", { mode: "timestamp" }),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  startDate: timestamp("start_date").defaultNow(),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const mentorshipSessions = sqliteTable("mentorship_sessions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const mentorshipSessions = pgTable("mentorship_sessions", {
+  id: serial("id").primaryKey(),
   relationshipId: integer("relationship_id").references(() => mentorshipRelationships.id),
   sessionType: text("session_type"),
-  scheduledAt: integer("scheduled_at", { mode: "timestamp" }),
+  scheduledAt: timestamp("scheduled_at"),
   duration: integer("duration"),
   status: text("status").default("scheduled"),
   notes: text("notes"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const messages = sqliteTable("messages", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
   senderId: integer("sender_id").references(() => users.id),
   receiverId: integer("receiver_id").references(() => users.id),
   content: text("content"),
   filePath: text("file_path"),
   isRead: integer("is_read").default(0),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const chatRooms = sqliteTable("chat_rooms", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const chatRooms = pgTable("chat_rooms", {
+  id: serial("id").primaryKey(),
   name: text("name"),
   topic: text("topic"),
   createdBy: integer("created_by").references(() => users.id),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const chatRoomMembers = sqliteTable("chat_room_members", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const chatRoomMembers = pgTable("chat_room_members", {
+  id: serial("id").primaryKey(),
   roomId: integer("room_id").references(() => chatRooms.id),
   userId: integer("user_id").references(() => users.id),
-  joinedAt: integer("joined_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  joinedAt: timestamp("joined_at").defaultNow(),
 });
 
-export const chatMessages = sqliteTable("chat_messages", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
   roomId: integer("room_id").references(() => chatRooms.id),
   senderId: integer("sender_id").references(() => users.id),
   content: text("content"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const jobs = sqliteTable("jobs", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const jobs = pgTable("jobs", {
+  id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
   employerId: integer("employer_id").references(() => users.id),
@@ -157,29 +157,29 @@ export const jobs = sqliteTable("jobs", {
   isInternal: integer("is_internal").default(0),
   isApproved: integer("is_approved").default(0),
   applicationDeadline: text("application_deadline"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const jobApplications = sqliteTable("job_applications", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const jobApplications = pgTable("job_applications", {
+  id: serial("id").primaryKey(),
   jobId: integer("job_id").references(() => jobs.id),
   applicantId: integer("applicant_id").references(() => users.id),
   status: text("status").default("pending"),
-  appliedAt: integer("applied_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  appliedAt: timestamp("applied_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const recruiters = sqliteTable("recruiters", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const recruiters = pgTable("recruiters", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   companyName: text("company_name"),
   companyType: text("company_type"),
   isVerified: integer("is_verified").default(0),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const cbtExams = sqliteTable("cbt_exams", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const cbtExams = pgTable("cbt_exams", {
+  id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
   creatorId: integer("creator_id").references(() => users.id),
@@ -187,32 +187,32 @@ export const cbtExams = sqliteTable("cbt_exams", {
   duration: integer("duration"),
   passingScore: real("passing_score"),
   randomizeQuestions: integer("randomize_questions").default(0),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const cbtQuestions = sqliteTable("cbt_questions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const cbtQuestions = pgTable("cbt_questions", {
+  id: serial("id").primaryKey(),
   examId: integer("exam_id").references(() => cbtExams.id),
   question: text("question").notNull(),
   options: text("options"),
   correctAnswer: text("correct_answer"),
   points: real("points").default(1),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const cbtResults = sqliteTable("cbt_results", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const cbtResults = pgTable("cbt_results", {
+  id: serial("id").primaryKey(),
   examId: integer("exam_id").references(() => cbtExams.id),
   userId: integer("user_id").references(() => users.id),
   score: real("score"),
   totalPoints: real("total_points"),
   passed: integer("passed"),
-  startedAt: integer("started_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
-  completedAt: integer("completed_at", { mode: "timestamp" }),
+  startedAt: timestamp("started_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
 });
 
-export const courses = sqliteTable("courses", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const courses = pgTable("courses", {
+  id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
   instructorId: integer("instructor_id").references(() => users.id),
@@ -223,96 +223,96 @@ export const courses = sqliteTable("courses", {
   isFree: integer("is_free").default(1),
   isApproved: integer("is_approved").default(0),
   thumbnail: text("thumbnail"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const courseLessons = sqliteTable("course_lessons", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const courseLessons = pgTable("course_lessons", {
+  id: serial("id").primaryKey(),
   courseId: integer("course_id").references(() => courses.id),
   title: text("title").notNull(),
   content: text("content"),
   videoUrl: text("video_url"),
   duration: text("duration"),
-  order: integer("order"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  lessonOrder: integer("lesson_order"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const courseEnrollments = sqliteTable("course_enrollments", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const courseEnrollments = pgTable("course_enrollments", {
+  id: serial("id").primaryKey(),
   courseId: integer("course_id").references(() => courses.id),
   userId: integer("user_id").references(() => users.id),
   progress: real("progress").default(0),
-  enrolledAt: integer("enrolled_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
-  completedAt: integer("completed_at", { mode: "timestamp" }),
+  enrolledAt: timestamp("enrolled_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
 });
 
-export const courseMaterials = sqliteTable("course_materials", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const courseMaterials = pgTable("course_materials", {
+  id: serial("id").primaryKey(),
   lessonId: integer("lesson_id").references(() => courseLessons.id),
   title: text("title"),
   filePath: text("file_path"),
   fileType: text("file_type"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const quizzes = sqliteTable("quizzes", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const quizzes = pgTable("quizzes", {
+  id: serial("id").primaryKey(),
   courseId: integer("course_id").references(() => courses.id),
   title: text("title"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const quizQuestions = sqliteTable("quiz_questions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const quizQuestions = pgTable("quiz_questions", {
+  id: serial("id").primaryKey(),
   quizId: integer("quiz_id").references(() => quizzes.id),
   question: text("question").notNull(),
   options: text("options"),
   correctAnswer: text("correct_answer"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const quizResults = sqliteTable("quiz_results", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const quizResults = pgTable("quiz_results", {
+  id: serial("id").primaryKey(),
   quizId: integer("quiz_id").references(() => quizzes.id),
   userId: integer("user_id").references(() => users.id),
   score: real("score"),
   passed: integer("passed"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const certificates = sqliteTable("certificates", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const certificates = pgTable("certificates", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   courseId: integer("course_id").references(() => courses.id),
   certificateNumber: text("certificate_number"),
-  issuedAt: integer("issued_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  issuedAt: timestamp("issued_at").defaultNow(),
 });
 
-export const notifications = sqliteTable("notifications", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   title: text("title"),
   message: text("message"),
   type: text("type"),
   isRead: integer("is_read").default(0),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const lgas = sqliteTable("lgas", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const lgas = pgTable("lgas", {
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   senatorialZone: text("senatorial_zone"),
 });
 
-export const wards = sqliteTable("wards", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const wards = pgTable("wards", {
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   lgaId: integer("lga_id").references(() => lgas.id),
 });
 
-export const systemSettings = sqliteTable("system_settings", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const systemSettings = pgTable("system_settings", {
+  id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
   value: text("value"),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
