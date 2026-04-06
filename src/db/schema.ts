@@ -316,3 +316,27 @@ export const systemSettings = pgTable("system_settings", {
   value: text("value"),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const auditLogs = pgTable("audit_logs", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  action: text("action").notNull(),
+  entityType: text("entity_type"),
+  entityId: integer("entity_id"),
+  details: text("details"),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const videoSessions = pgTable("video_sessions", {
+  id: serial("id").primaryKey(),
+  mentorshipSessionId: integer("mentorship_session_id").references(() => mentorshipSessions.id),
+  roomId: text("room_id").notNull(),
+  hostUserId: integer("host_user_id").references(() => users.id),
+  participantUserId: integer("participant_user_id").references(() => users.id),
+  status: text("status").default("pending"),
+  startedAt: timestamp("started_at"),
+  endedAt: timestamp("ended_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
